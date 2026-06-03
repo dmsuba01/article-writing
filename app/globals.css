@@ -1,0 +1,120 @@
+/* app/globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #7d4e57;
+  --primary-dark: #5c3640;
+  --primary-light: #a67580;
+  --accent: #c4a4a9;
+  --bg: #f5f0eb;
+  --bg-card: #ffffff;
+  --bg-muted: #ede8e3;
+  --text: #1a1a1a;
+  --text-muted: #6b6b6b;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: "Gill Sans", Optima, "Segoe UI", sans-serif;
+  min-height: 100vh;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+/* Article content prose styles */
+.prose-article h2 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--primary-dark);
+  margin: 2rem 0 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--accent);
+}
+
+.prose-article p {
+  line-height: 1.8;
+  margin-bottom: 1.2rem;
+  color: #2d2d2d;
+}
+
+.prose-article ul {
+  list-style: none;
+  margin: 1rem 0 1.5rem;
+  padding: 0;
+}
+
+.prose-article ul li {
+  padding: 0.4rem 0 0.4rem 1.5rem;
+  position: relative;
+  line-height: 1.7;
+}
+
+.prose-article ul li::before {
+  content: "◆";
+  position: absolute;
+  left: 0;
+  color: var(--primary);
+  font-size: 0.6rem;
+  top: 0.65rem;
+}
+
+.prose-article strong {
+  color: var(--primary-dark);
+  font-weight: 600;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+.animate-slide-down {
+  animation: slideDown 0.3s ease forwards;
+}
+
+/* Card hover effect */
+.article-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.article-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(125, 78, 87, 0.15);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-muted);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 3px;
+}
