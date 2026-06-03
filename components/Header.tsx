@@ -232,11 +232,11 @@ export default function Header() {
                 </button>
               </div>
 
-              <div className="mb-4 p-3 bg-primary/5 border border-primary/20 rounded-lg text-sm">
+              {/* <div className="mb-4 p-3 bg-primary/5 border border-primary/20 rounded-lg text-sm">
                 <p className="font-medium text-primary mb-1">Demo credentials:</p>
                 <p className="text-gray-600">Email: admin@articlewriter.com</p>
                 <p className="text-gray-600">Password: admin123</p>
-              </div>
+              </div> */}
 
               <form onSubmit={handleLogin} className="space-y-4">
                 <div>

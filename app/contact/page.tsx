@@ -92,7 +92,7 @@ export default function ContactPage() {
               </div>
 
               {/* Demo credentials */}
-              <div className="mt-4 bg-white border border-gray-200 rounded-2xl p-5 shadow-card">
+              {/* <div className="mt-4 bg-white border border-gray-200 rounded-2xl p-5 shadow-card">
                 <h3 className="font-semibold text-primary mb-2">
                   Demo Admin Access
                 </h3>
@@ -100,8 +100,8 @@ export default function ContactPage() {
                   Email: admin@articlewriter.com
                 </p>
                 <p className="text-sm text-text-muted">Password: admin123</p>
-              </div>
-            </div>
+              </div> */}
+            </div> 
 
             {/* Right: Contact form */}
             <div className="bg-white rounded-2xl shadow-card p-8">
