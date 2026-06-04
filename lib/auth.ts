@@ -1,9 +1,17 @@
-// lib/auth.ts
+// lib/auth.ts  ← REPLACE your existing lib/auth.ts with this file
+// ─────────────────────────────────────────────────────────────────────────────
+// Authentication helpers. The session cookie logic is unchanged.
+// Only the verifyLogin and isAdmin functions now query the database
+// instead of the in-memory store.
+// ─────────────────────────────────────────────────────────────────────────────
+
 import { cookies } from "next/headers";
-import { store, simpleHash } from "./store";
+import { verifyAdminLogin, isAdminEmail } from "./db/admins";
 
 export const SESSION_COOKIE = "aw_session";
 
+// ── Get the currently logged-in user from the session cookie ──────────────────
+// Returns { email, name } or null if not logged in
 export function getSession(): { email: string; name: string } | null {
   const cookieStore = cookies();
   const session = cookieStore.get(SESSION_COOKIE);
@@ -15,19 +23,16 @@ export function getSession(): { email: string; name: string } | null {
   }
 }
 
-export function isAdmin(email: string): boolean {
-  return store.admins.some((a) => a.email === email);
+// ── Check if an email belongs to an admin (now queries database) ──────────────
+export async function isAdmin(email: string): Promise<boolean> {
+  return isAdminEmail(email);
 }
 
-export function verifyLogin(
+// ── Verify login credentials against database ─────────────────────────────────
+// Used in your login API route
+export async function verifyLogin(
   email: string,
   password: string
-): { email: string; name: string } | null {
-  const admin = store.admins.find(
-    (a) =>
-      a.email.toLowerCase() === email.toLowerCase() &&
-      a.passwordHash === simpleHash(password)
-  );
-  if (!admin) return null;
-  return { email: admin.email, name: admin.name };
+): Promise<{ email: string; name: string } | null> {
+  return verifyAdminLogin(email, password);
 }

@@ -1,0 +1,59 @@
+// prisma/schema.prisma
+// ─────────────────────────────────────────────────────────────────────────────
+// This file defines your database tables.
+//
+// After editing this file, run:
+//   npx prisma db push      ← applies changes to Neon
+//   npx prisma generate     ← regenerates TypeScript client
+// ─────────────────────────────────────────────────────────────────────────────
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+}
+
+// ─── Article ──────────────────────────────────────────────────────────────────
+model Article {
+  id        String    @id @default(cuid())
+  title     String
+  topic     String
+  excerpt   String
+  content   String    @db.Text
+  author    String
+  date      DateTime  @default(now())
+  likes     Int       @default(0)
+  likedBy   String[]                      // Array of session IDs that liked this
+  comments  Comment[]                     // One-to-many relation
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@map("articles")
+}
+
+// ─── Comment ──────────────────────────────────────────────────────────────────
+model Comment {
+  id        String   @id @default(cuid())
+  name      String
+  text      String
+  date      DateTime @default(now())
+  articleId String
+  article   Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@map("comments")
+}
+
+// ─── Admin ────────────────────────────────────────────────────────────────────
+model Admin {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  createdAt    DateTime @default(now())
+
+  @@map("admins")
+}

@@ -1,39 +1,52 @@
 // app/api/articles/route.ts
-import { NextRequest, NextResponse } from "next/server";
-import { getSession } from "@/lib/auth";
-import { store } from "@/lib/store";
-import { v4 as uuidv4 } from "uuid";
+// ─────────────────────────────────────────────────────────────────────────────
+// GET  /api/articles  → fetch all articles from Neon database
+// POST /api/articles  → create a new article (admin only)
+// ─────────────────────────────────────────────────────────────────────────────
 
+import { NextRequest, NextResponse } from "next/server";
+import { getAllArticles, createArticle } from "@/lib/db/articles";
+import { getSession } from "@/lib/auth";
+
+// GET /api/articles
 export async function GET() {
-  return NextResponse.json({ articles: store.articles });
+  try {
+    const articles = await getAllArticles();
+    return NextResponse.json(articles);
+  } catch (error) {
+    console.error("GET /api/articles error:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch articles" },
+      { status: 500 }
+    );
+  }
 }
 
+// POST /api/articles — admin only
 export async function POST(req: NextRequest) {
-  const session = getSession();
-  if (!session) {
-    return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+  try {
+    const session = getSession();
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const body = await req.json();
+    const { title, topic, excerpt, content, author } = body;
+
+    if (!title || !topic || !excerpt || !content || !author) {
+      return NextResponse.json(
+        { error: "All fields are required" },
+        { status: 400 }
+      );
+    }
+
+    const article = await createArticle({ title, topic, excerpt, content, author });
+    return NextResponse.json(article, { status: 201 });
+  } catch (error) {
+    console.error("POST /api/articles error:", error);
+    return NextResponse.json(
+      { error: "Failed to create article" },
+      { status: 500 }
+    );
   }
-
-  const { title, topic, excerpt, content, author } = await req.json();
-
-  if (!title || !topic || !excerpt || !content || !author) {
-    return NextResponse.json({ ok: false, error: "All fields required" }, { status: 400 });
-  }
-
-  const newArticle = {
-    id: uuidv4(),
-    title: title.trim(),
-    topic: topic.trim(),
-    excerpt: excerpt.trim(),
-    content: content.trim(),
-    author: author.trim(),
-    date: new Date().toISOString().split("T")[0],
-    likes: 0,
-    likedBy: [],
-    comments: [],
-  };
-
-  store.articles.unshift(newArticle);
-
-  return NextResponse.json({ ok: true, id: newArticle.id });
 }
